@@ -1,62 +1,80 @@
 class CartList {
     constructor() {
-        
+        this.cartList = {};
     }
-
-    static cartList = {};
 
     /**
      * Метод добавляет товар в корзину
      * @param {String} id Идентификатор товара
      * @param {String} product Объект с информацией о товаре
      */
-    static add(id, product) {
+    add(id, product) {
         if ( this.cartList[id] ) {
             this.cartList[id].count++;
         } else {
             this.cartList[id] = product;
         }
 
-        console.log(this.cartList);
-
-        CartList.render();
+        this.render();
+        this.showCart();
     }
 
     /**
      * Метод удаляет товар из корзины по значению id
      * @param {String} id id товара
      */
-    static remove(id) {
-        id = String(id);
-        if ( !this.cartList[id] ) return;
-
+    remove(id) {
         if ( this.cartList[id].count == 1 ) {
             delete this.cartList[id];
         } else {
             this.cartList[id].count--;
         }
 
-        CartList.render();
+        this.render();
     }
 
     /**
      * Метод отрисовывает корзину
      */
-    static render() {
+    render() {
         let cart = '';
 
         for (let id in this.cartList) {
-            let item = this.cartList[id];
             cart += this.cartList[id].render();
         }
         
         document.querySelector('.cart-list').innerHTML = cart;
+        this.setRemoveFromCartHandlers();
+    }
 
-        document.querySelectorAll('.cart-item__remove-from-cart').forEach(function(button) {
+    /**
+     * Метод добавляет обработчики товарам в корзине
+     */
+    setRemoveFromCartHandlers() {
+        document.querySelectorAll('.cart-item__remove-from-cart').forEach((button) => {
             button.addEventListener('click', (event) => {
                 let product = event.target.closest('div');
                 let productId = product.id;
-                CartList.remove(productId);
+                this.remove(productId);
+            })
+        });
+    }
+
+    /**
+     * Метод добавляет обработчики товарам в каталоге
+     */
+    setAddToCartHandlers() {
+        document.querySelectorAll('.goods-item__add-to-cart').forEach((button) => {
+            button.addEventListener('click', (event) => {
+                let product = event.target.closest('div');
+                let productId = product.id;
+                let productName = product.dataset.name;
+                let productPrice = product.dataset.price;
+                let productImg = product.dataset.img;
+
+                let cartItem = new CartItem(productId, productName, productPrice, productImg);
+
+                this.add(productId, cartItem);
             })
         });
     }
@@ -64,18 +82,18 @@ class CartList {
     /**
      * Метод очищает корзину
      */
-    static clear() {
+    clear() {
         this.cartList = {};
     }
 
-    static showCart() {
+    showCart() {
         console.log(this.cartList);
     }
 
     /**
      * Метод отправляет данные о заказе на сервер
      */
-    static post() {
+    post() {
         // какой-то код
     }
 }
