@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="original-text">'Lorem ipsum dolor' sit ame't, consectetur 'adipisicing elit'. Amet placeat perspiciatis dolorem tempore quia hi'c iusto commodi beatae odio provident maiores nostrum a, necessitatibus sed ipsa similique nulla non atque por'ro distinctio. Omnis illo iure hic, sit cum atque dignissimos perferendis dolo're porro exercitationem est eius laboriosam maiores officiis numquam in'cidu'nt unde beatae animi fugiat err'or provident, tempore non nulla tenetur. 'Voluptatibus, error ducimus' neque obcaecati, expedita, 'laudantium' exercitationem doloremque alias illo rerum officia. 'In dolores veniam eius porro' illo dolore sit explicabo quaerat, dolorem autem optio maxime eos eaque modi deserunt, similique dolorum quae tempora, 'eveniet est officia sunt.'</div><br><br>
+    <div class="edited-text"></div>
+
+
+    <script>
+        'use strict';
+
+        let text = document.querySelector('.original-text').textContent;
+        let regExp = /(?<![a-zа-яё0-9])'|'(?![a-zа-яё0-9])/gi;
+
+        document.querySelector('.edited-text').textContent = text.replace(regExp, '"');        
+    </script>
+</body>
+</html>

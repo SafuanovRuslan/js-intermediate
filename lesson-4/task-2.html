@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+        <input type="text" name="name" placeholder="Василий">
+        <div class="error error_name">Некорректное имя</div>
+        <input type="phone" name="phone" placeholder="+7(000)000-0000">
+        <div class="error error_phone">некорректный номер телефона</div>
+        <input type="email" name="mail" placeholder="my-mail@mail.ru">
+        <div class="error error_mail">Некорректный адрес электронной почты</div>
+        <textarea name="other" placeholder="О себе"></textarea><br>
+        <input type="submit" value="Отправить">
+
+
+    <script>
+        'use strict';
+
+        document.querySelector('input[type="submit"]').addEventListener('click', function() {
+            clearErrors();
+            let errorsExist = false;
+
+            let name = document.querySelector('input[name="name"]');
+            let phone = document.querySelector('input[name="phone"]');
+            let mail = document.querySelector('input[name="mail"]');
+            let nameError = document.querySelector('.error_name');
+            let phoneError = document.querySelector('.error_phone');
+            let mailError = document.querySelector('.error_mail');
+
+            let regExpName = /^[А-ЯЁ]{1}[а-яё]{1,23}$/u;
+            let regExpPhone = /^\+\d\([0-9]{3}\)[0-9]{3}-[0-9]{4}$/u;
+            let regExpMail = /[A-Z0-9_-]+@([A-Z0-9-]+\.){1,2}[A-Z]{2,4}/iu;
+
+            if ( !regExpName.test(name.value) ) {
+                nameError.style = 'opacity: 1; color: red;';
+                name.style = 'outline: 1px solid red;'
+                errorsExist = true;
+            }
+
+            if ( !regExpPhone.test(phone.value) ) {
+                phoneError.style = 'opacity: 1; color: red;';
+                phone.style = 'outline: 1px solid red;'
+                errorsExist = true;
+            }
+
+            if ( !regExpMail.test(mail.value) ) {
+                mailError.style = 'opacity: 1; color: red;';
+                mail.style = 'outline: 1px solid red;'
+                errorsExist = true;
+            }
+
+            if ( !errorsExist ) {
+                let inputs = document.querySelectorAll('input[name]');
+                for (let input of inputs) {
+                    input.style = 'outline: 1px solid green;';
+                }
+            }
+        });
+
+        function clearErrors() {
+            let errors = document.querySelectorAll('.error');
+            for (let error of errors) {
+                error.style = 'opacity: 0;';
+            }
+
+            let inputs = document.querySelectorAll('input');
+            for (let input of inputs) {
+                input.style = 'outline: none;';
+            }
+        }
+
+        clearErrors();
+    </script>
+</body>
+</html>
