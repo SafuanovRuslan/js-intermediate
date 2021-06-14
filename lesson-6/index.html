@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eShop</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://kit.fontawesome.com/4f05b53706.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div id="app">
+        <header class="header container">
+            <a href="https://www.mvideo.ru/"><img src="img/logo.svg" alt="logo"></a>
+            <div>
+                <input type="text" class="goods-search" v-model="searchLine" />
+                <search :handler="filterGoods"></search>
+            </div>
+            <button class="cart-button" type="button"><i class="fas fa-shopping-cart"></i>
+                <div>корзина</div>
+            </button>
+        </header>
+        <main class="container">
+
+            <h2>Каталог</h2>
+            <h2 v-if="filteredGoods.length == 0">Ничего не найдено</h2>
+            <goods-list :goods="filteredGoods" :handler="addToCart"></goods-list>
+
+            <h2 v-if="isVisibleCart">Корзина</h2>
+            <cart-list :goods="shopCart" :handler="removeFromCart"></cart-list>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js">
+    </script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>

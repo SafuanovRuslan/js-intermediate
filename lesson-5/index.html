@@ -4,29 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>eShop</title>
     <link rel="stylesheet" href="css/style.css">
 
-    <script src="https://kit.fontawesome.com/4f05b53706.js"
-        crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/4f05b53706.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
     <div id="app">
         <header class="header container">
-            <a href="https://www.mvideo.ru/"><img
-                    src="img/logo.svg" alt="logo"></a>
+            <a href="https://www.mvideo.ru/"><img src="img/logo.svg" alt="logo"></a>
             <div>
-                <input type="text" class="goods-search"
-                    v-model="searchLine" />
-                <button class="search-button" type="button"
-                    @click="filterGoods"><i
-                        class="fas fa-search"></i></button>
+                <input type="text" class="goods-search" v-model="searchLine" />
+                <button class="search-button" type="button" @click="filterGoods"><i class="fas fa-search"></i></button>
             </div>
-            <button class="cart-button" type="button"><i
-                    class="fas fa-shopping-cart"></i>
+            <button class="cart-button" type="button"><i class="fas fa-shopping-cart"></i>
                 <div>корзина</div>
             </button>
         </header>
@@ -35,30 +28,23 @@
             <h2 v-if="filteredGoods.length == 0">Ничего не
                 найдено</h2>
             <div class="goods-list">
-                <div class="goods-item"
-                    v-for="good in filteredGoods">
-                    <img src="img/noimage.png"
-                        alt="preview">
+                <div class="goods-item" v-for="good in filteredGoods">
+                    <img src="img/noimage.png" alt="preview">
                     <h3>{{ good.product_name }}</h3>
                     <p>{{ good.price }}</p>
-                    <button class="goods-item__add-to-cart"
-                        @click="addToCart(good)"><i
+                    <button class="goods-item__add-to-cart" @click="addToCart(good)"><i
                             class="fas fa-shopping-cart"></i>
                         В корзину</button>
                 </div>
             </div>
             <h2 v-if="isVisibleCart">Корзина</h2>
             <div class="cart-list" v-if="isVisibleCart">
-                <div class="cart-item"
-                    v-for="good in shopCart">
-                    <img src="img/noimage.png"
-                        alt="preview">
+                <div class="cart-item" v-for="good in shopCart">
+                    <img src="img/noimage.png" alt="preview">
                     <h3>{{ good.product_name }}</h3>
                     <p>{{ good.totalPrice }}</p>
                     <p>{{ good.count }} шт.</p>
-                    <button
-                        class="cart-item__remove-from-cart"
-                        @click="removeFromCart(good)"><i
+                    <button class="cart-item__remove-from-cart" @click="removeFromCart(good)"><i
                             class="fas fa-shopping-cart"></i>
                         удалить</button>
                 </div>
@@ -66,8 +52,7 @@
         </main>
     </div>
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js">
     </script>
     <script src="js/script.js"></script>
 </body>
