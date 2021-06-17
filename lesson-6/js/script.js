@@ -1,19 +1,19 @@
 Vue.component('goods-list', {
     template: `
         <div class="goods-list">
-            <goods-item v-for="good in goods" :good="good" :handler="handler"></goods-item>
+            <goods-item v-for="good in goods" :good="good"></goods-item>
         </div>
     `,
-    props: ['goods', 'handler'],
+    props: ['goods'],
 });
 
 Vue.component('cart-list', {
     template: `
         <div class="cart-list">
-            <cart-item v-for="good in goods" :good="good" :handler="handler"></cart-item>
+            <cart-item v-for="good in goods" :good="good"></cart-item>
         </div>
     `,
-    props: ['goods', 'handler'],
+    props: ['goods'],
 });
 
 Vue.component('goods-item', {
@@ -22,12 +22,12 @@ Vue.component('goods-item', {
             <img src="img/noimage.png" alt="preview">
             <h3>{{ good.product_name }}</h3>
             <p>{{ good.price }}</p>
-            <button class="goods-item__add-to-cart" @click="handler(good)">
+            <button class="goods-item__add-to-cart" @click="$parent.$parent.addToCart(good)">
                 <i class="fas fa-shopping-cart"></i> В корзину
             </button>
         </div>
     `,
-    props: ['good', 'handler'],
+    props: ['good'],
 });
 
 Vue.component('cart-item', {
@@ -37,19 +37,38 @@ Vue.component('cart-item', {
             <h3>{{ good.product_name }}</h3>
             <p>{{ good.totalPrice }}</p>
             <p>{{ good.count }} шт.</p>
-            <button class="cart-item__remove-from-cart" @click="handler(good)">
+            <button class="cart-item__remove-from-cart" @click="$parent.$parent.removeFromCart(good)">
                 <i class="fas fa-shopping-cart"></i> удалить
             </button>
         </div>
     `,
-    props: ['good', 'handler'],
+    props: ['good'],
 });
+
+Vue.component('cart-button', {
+    template: `
+        <button class="cart-button" type="button" @click="$parent.showCart"><i class="fas fa-shopping-cart"></i>
+            <div>корзина</div>
+            <div class="cart-size" v-if="$parent.shopCart.length!=0">{{ size }}</div>
+        </button>
+    `,
+    props: ['size'],
+})
 
 Vue.component('search', {
     template: `
+        <div>
+            <input type="text" class="goods-search" v-model="$parent.searchLine">
             <button class="search-button" type="button" @click="handler()"><i class="fas fa-search"></i></button>
+        </div>
     `,
     props: ['handler'],
+})
+
+Vue.component('error', {
+    template: `
+        <h2 v-if="$parent.filteredGoods.length == 0">Ничего не найдено</h2>
+    `,
 })
 
 
@@ -59,6 +78,7 @@ const app = new Vue({
         goods: [],
         filteredGoods: [],
         isVisibleCart: false,
+        isVisibleCatalog: true,
         shopCart: [],
         searchLine: '',
     },
@@ -71,57 +91,52 @@ const app = new Vue({
         },
 
         filterGoods() {
-            this.filteredGoods = this.goods.filter((value) => {
-                return value.product_name.toLowerCase().includes(this.searchLine.toLowerCase());
+            this.filteredGoods = this.goods.filter((product) => {
+                return product.product_name.toLowerCase().includes(this.searchLine.toLowerCase());
             });
         },
 
         addToCart(good) {
-            this.isVisibleCart = true;
-            if ( this.shopCart.includes(good) ) {
-                id = this.shopCart.indexOf(good);
-                this.shopCart = this.shopCart.map((good, index) => {
-                    if ( index == id ) {
-                        good.count++;
-                        good.totalPrice = good.price * good.count;
-                        return good;
-                    } else {
-                        return good;
-                    }
-                });
-            } else {
-                good.count = 1;
-                good.totalPrice = good.price * good.count;
-                this.shopCart.push(good);
-            }
+            this.shopCart.splice(this.shopCart.length, 0, good.id_product);
         },
 
         removeFromCart(good) {
-            id = this.shopCart.indexOf(good);
-            if ( this.shopCart[id].count == 1 ) {
-                this.shopCart = this.shopCart.filter((good, index) => {
-                    if ( index == id ) {
-                        good.count--;
-                        good.totalPrice = good.price * good.count;
-                        return false;
-                    } else {
-                        return true;
-                    }
-                });
-            } else {
-                this.shopCart = this.shopCart.map((good, index) => {
-                    if ( index == id ) {
-                        good.count--;
-                        good.totalPrice = good.price * good.count;
-                        return good;
-                    } else {
-                        return good;
-                    }
-                });
+            let id = this.shopCart.indexOf(good.id_product);
+            this.shopCart.splice(id, 1);
+
+            this.isVisibleCart = false;
+            setTimeout(() => app.isVisibleCart = true, 0);
+        },
+
+        showCart() {
+            this.isVisibleCart = this.isVisibleCart ? false : true;
+            this.isVisibleCatalog = this.isVisibleCatalog ? false : true;
+        },
+    },
+    computed: {
+        shopCartSize() {
+            return this.shopCart.length;
+        },
+
+        renderCart() {
+            let count = this.shopCart.length;
+            let result = [];
+
+            for (let i = 0; i < count; i++) {
+                let good = this.goods.find(item => item.id_product == this.shopCart[i]);
+
+                if ( result.includes(good) ) {
+                    let index = result.indexOf(good);
+                    result[index].count++;
+                    result[index].totalPrice = result[index].price * result[index].count;
+                } else {
+                    good.count = 1;
+                    good.totalPrice = good.price * good.count;
+                    result.push(good);
+                }
             }
-            if ( this.shopCart.length == 0 ) {
-                this.isVisibleCart = false;
-            }
+
+            return result;
         }
     },
     async mounted() {
